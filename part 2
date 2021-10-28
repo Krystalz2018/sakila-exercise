@@ -1,0 +1,58 @@
+# 1a) List the actors (first_name, last_name, actor_id) who acted in more then 25 movies.  Also return the count of movies they acted in, aliased as movie_count. Order by first and last name alphabetically.
+SELECT
+a.first_name,
+a.last_name,
+a.actor_id,
+COUNT(f.film_id) AS movie_count
+FROM actor a INNER JOIN film_actor f ON a.actor_id = f.actor_id
+GROUP BY a.actor_id
+HAVING COUNT(f.film_id) > 25
+ORDER BY a.first_name, a.last_name;
+# 1b) List the actors (first_name, last_name, actor_id) who have worked in German language movies. Order by first and last name alphabetically.
+SELECT
+a.first_name,
+a.last_name,
+l.language_id
+FROM actor a INNER JOIN film_actor f ON a.actor_id = f.actor_id
+				INNER JOIN film i ON f.film_id = i.film_id
+                INNER JOIN language l ON l.language_id = i.language_id
+WHERE l.language_id = 6
+ORDER BY a.first_name, a.last_name;
+# 1c) List the actors (first_name, last_name, actor_id) who acted in horror movies and the count of horror movies by each actor.  Alias the count column as horror_movie_count. Order by first and last name alphabetically.
+SELECT
+a.first_name,
+a.last_name,
+y.category_id,
+COUNT(y.category_id) AS horror_movie_count
+FROM actor a INNER JOIN film_actor f ON a.actor_id = f.actor_id
+				INNER JOIN film i ON f.film_id = i.film_id
+                INNER JOIN film_category y ON f.film_id = y.film_id
+                INNER JOIN category c ON c.category_id= y.category_id
+WHERE y.category_id = 11
+GROUP BY a.first_name, a.last_name
+ORDER BY a.first_name, a.last_name;
+# 1d) List the customers who rented more than 3 horror movies.  Return the customer first and last names, customer IDs, and the horror movie rental count (aliased as horror_movie_count). Order by first and last name alphabetically.
+SELECT
+c.first_name,
+c.last_name,
+y.category_id,
+COUNT(y.category_id) AS horror_movie_count
+FROM customer c INNER JOIN rental r ON c.customer_id = r.customer_id
+				INNER JOIN inventory i ON i.inventory_id = r.inventory_id
+                INNER JOIN film f ON f.film_id = i.film_id
+                INNER JOIN film_category y ON f.film_id= y.film_id
+WHERE y.category_id = 11
+GROUP BY c.first_name, c.last_name
+HAVING COUNT(y.category_id) > 3
+ORDER BY C.first_name, C.last_name;
+# 1e) List the customers who rented a movie which starred Scarlett Bening.  Return the customer first and last names and customer IDs. Order by first and last name alphabetically.
+SELECT
+c.first_name,
+c.last_name,
+c.customer_id
+FROM customer c INNER JOIN rental r ON c.customer_id = r.customer_id
+				INNER JOIN inventory i ON i.inventory_id = r.inventory_id
+                INNER JOIN film f ON f.film_id = i.film_id
+                INNER JOIN film_actor a ON a.film_id= f.film_id
+WHERE a.actor_id = 124
+ORDER BY C.first_name, C.last_name;
